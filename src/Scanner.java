@@ -13,20 +13,24 @@ public class Scanner {
 		}
 
 		public String toString() {
-			return this.tokenType + ": " + this.tokenVal + " ";
+			return "|" + this.tokenType + ": " + this.tokenVal + "|";
 		}
 	}
 
 	public Token extractToken(StringBuilder stream){
 	  //Ignore whitespace
-	  while(isWhitespace(stream.charAt(0)))
+	  while(stream.length() > 0 && isWhitespace(stream.charAt(0)))
     	stream.deleteCharAt(0);
+	  
+	  //Return null on empty stream
+	  if(stream.length() == 0)
+		  return null;
 	  
 	  //Num token
 	  if(isDigit(stream.charAt(0))){
 			String val =  "" + stream.charAt(0);
 			stream.deleteCharAt(0);
-			while(isDigit(stream.charAt(0))) {
+			while(stream.length() > 0 && isDigit(stream.charAt(0))) {
 				val += stream.charAt(0);
 				stream.deleteCharAt(0);
 			}
@@ -54,7 +58,7 @@ public class Scanner {
 	  //Greater than, greater than or equal to, less than, and less than or equal to tokens
 	  if(stream.charAt(0) == '<') {
 		  stream.deleteCharAt(0);
-		  if (stream.charAt(0) == '=') {
+		  if (stream.length() > 0 && stream.charAt(0) == '=') {
 			  stream.deleteCharAt(0);
 			  return new Token(TokenType.LTE, "<=");
 		  }
@@ -62,23 +66,27 @@ public class Scanner {
 	  }
 	  if(stream.charAt(0) == '>') {
 		  stream.deleteCharAt(0);
-		  if (stream.charAt(0) == '=') {
+		  if (stream.length() > 0 && stream.charAt(0) == '=') {
 			  stream.deleteCharAt(0);
 			  return new Token(TokenType.GTE, ">=");
 		  }
 		  return new Token(TokenType.GT, ">");
 	  }
 	
+	  //Character exists but is not expected, so report an error and return null
 	  System.out.println("Error: Unexpected character in stream: " + stream.charAt(0));
+	  stream.deleteCharAt(0);
 	  return null;
   }
 
+	//Helper function, returns true if charAt is a digit
 	private boolean isDigit(char charAt) {
-		if (charAt >= '0' || charAt <= '9')
+		if (charAt >= '0' && charAt <= '9')
 			return true;
 		return false;
 	}
-
+	
+	//Helper function, returns true if charAt is whitespace
 	private boolean isWhitespace(char charAt) {
 		if (charAt == ' ' || charAt == '\n' || charAt == '\t')
 			return true;
@@ -86,19 +94,14 @@ public class Scanner {
 	}
 
 	public String extractTokens(String arg) {
-		/*
-		 * TODO #1: Finish this function to iterate over all tokens in the input string.
-		 * 
-		 * Pseudo code: String extractTokens(String arg): String result= while(arg is
-		 * not empty) Token nextToken = extractToken(arg) result += nextToken.toString()
-		 * return result
-		 */
-
 		String result = "";
-		while (arg != "" && arg != null) {
-			Token nextToken = extractToken(arg);
+		StringBuilder sb = new StringBuilder(arg);
+		while (sb.length() > 0) {
+			Token nextToken = extractToken(sb);
+			if(nextToken != null)
+				result += nextToken.toString();
 		}
-		return null;
+		return result;
 	}
 
 }

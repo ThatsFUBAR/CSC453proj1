@@ -26,6 +26,32 @@ public class ScannerTest {
 				+ "(this is only a subset of what we will test your code on)");
 		System.out.println("*******************************************");
 		System.out.println();
+		
+		
+		//Custom test cases
+		result = test.extractTokens("123 456   ");
+		expected = "|NUM: 123||NUM: 456|";
+		assert (result.equals(expected));
+		
+		result = test.extractTokens("@");
+		
+		result = test.extractTokens("123<456");
+		expected = "|NUM: 123||LT: <||NUM: 456|";
+		assert (result.equals(expected));
+		
+		result = test.extractTokens("<=->=");
+		expected = "|LTE: <=||MINUS: -||GTE: >=|";
+		assert (result.equals(expected));
+		
+		result = test.extractTokens("			<=             -  \n >=");
+		expected = "|LTE: <=||MINUS: -||GTE: >=|";
+		assert (result.equals(expected));
+		
+		result = test.extractTokens("1234!5678");
+		
+		result = test.extractTokens(">>>>h");
+		
+		result = test.extractTokens("$<= + 23");
 	}
 
 	public static void main(String[] args) {
