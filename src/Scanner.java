@@ -30,7 +30,7 @@ public class Scanner {
 				val += stream.charAt(0);
 				stream.deleteCharAt(0);
 			}
-			return new Token(TokenType.NUM, "val");
+			return new Token(TokenType.NUM, val);
 	  }
 	  
 	  //Basic operation tokens
